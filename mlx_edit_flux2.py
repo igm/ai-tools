@@ -151,9 +151,9 @@ def main():
     parser.add_argument(
         "--model",
         type=str,
-        default="flux2-klein-4b",
+        default="flux2-klein-9b",
         choices=["flux2-klein-4b", "flux2-klein-9b"],
-        help="Model variant (default: flux2-klein-4b)",
+        help="Model variant (default: flux2-klein-9b)",
     )
     parser.add_argument(
         "--resolution",
