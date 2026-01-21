@@ -105,7 +105,8 @@ def edit_image(
         width: Output width
         steps: Number of inference steps
         image_strength: How strongly the input image influences output (0.0-1.0).
-                      Only used for single-image editing. Ignored for multi-image.
+                      Default None means full denoising (same as CLI).
+                      For multi-image editing, this is always ignored (None).
         seed: Random seed
 
     Note: FLUX.2 does not support CFG guidance, so guidance is fixed at 1.0
@@ -114,10 +115,18 @@ def edit_image(
         seed = int(time.time() * 1000000) % 2**32
 
     use_multi_image = len(input_images) > 1
+
+    # Calculate init timestep if image_strength is set (single-image only)
+    if not use_multi_image and image_strength is not None:
+        init_timestep = max(1, int(steps * image_strength))
+        actual_steps = steps - init_timestep
+        strength_info = f"{image_strength} ({actual_steps} denoising steps from timestep {init_timestep})"
+    else:
+        strength_info = "None (full denoising from timestep 0)"
+
     print(f"Editing with seed {seed}...")
     print(f"  Input images: {len(input_images)}")
-    if not use_multi_image:
-        print(f"  Image strength: {image_strength if image_strength is not None else 0.4}")
+    print(f"  Image strength: {strength_info}")
     print(f"  [MEM] Before generation: {get_memory_usage():.2f} GB")
 
     start_time = time.time()
@@ -126,7 +135,7 @@ def edit_image(
     image_paths = [str(p) for p in input_images]
 
     # Generate using Flux2KleinEdit with image_paths (list)
-    # image_strength is passed for single-image editing
+    # image_strength is None by default (full denoising, matching CLI behavior)
     image = model.generate_image(
         seed=seed,
         prompt=prompt,
@@ -180,9 +189,11 @@ def main():
     parser.add_argument(
         "--strength",
         type=float,
-        default=0.4,
-        help="Image strength: how much input influences output (0.0-1.0, default: 0.4). "
-             "Only used for single-image editing.",
+        default=None,
+        help="Image strength: how much input influences output (0.0-1.0). "
+             "Default None means full denoising (same as CLI). "
+             "Only applicable for single-image editing. "
+             "(default: None)",
     )
     parser.add_argument("--seed", type=int, default=None, help="Random seed")
     parser.add_argument("--output", type=str, default="output.png", help="Output path")
@@ -232,7 +243,7 @@ def main():
     width, height = calculate_dimensions(img_width, img_height, args.resolution)
     print(f"Output size: {width}x{height}")
 
-    # Edit image(s) - image_strength only applies to single-image mode
+    # Edit image(s) - image_strength defaults to None (full denoising)
     image, seed = edit_image(
         model,
         args.prompt,
@@ -240,7 +251,7 @@ def main():
         height,
         width,
         args.steps,
-        args.strength if len(input_paths) == 1 else None,
+        args.strength,
         args.seed,
     )
 
