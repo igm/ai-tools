@@ -74,20 +74,27 @@ python generate_flux2.py \
 
 ### MLX Version (Recommended)
 
+Supports both **single-image editing** and **multi-image compositing**.
+
 ```bash
+# Single-image editing
 python mlx_edit_flux2.py \
   "transform into a watercolor painting" \
   --input photo.jpg \
-  --strength 0.5 \
   --steps 4 \
+  --output edited.png
+
+# Multi-image compositing (e.g., add glasses to a person)
+python mlx_edit_flux2.py \
+  "Make the woman wear the eyeglasses" \
+  --input person.jpg glasses.jpg \
+  --steps 4 \
+  --seed 42 \
   --output edited.png
 ```
 
 **Parameters:**
-- `--input`: Input image path (single image only)
-- `--strength`: How much input influences output (0.0-1.0, default: 0.4)
-  - Lower = more creative freedom
-  - Higher = closer to original image
+- `--input`: Input image path(s) - accepts 1+ images for single/multi-image editing
 - `--resolution`: Target longest side (default: 1024)
 - `--steps`: Inference steps (4-10, default: 4)
 - `--quantize`: Quantization bits (3, 4, 5, 6, 8; default: 8)
@@ -157,7 +164,7 @@ python mlx_generate_flux2.py \
 python mlx_edit_flux2.py \
   "Add dramatic sunset lighting with orange and purple sky" \
   --input landscape.jpg \
-  --strength 0.3 --steps 6
+  --steps 6
 ```
 
 ### Describe an image

@@ -18,7 +18,6 @@ except ImportError:
     raise
 
 from PIL import Image
-from typing import List
 
 
 def calculate_dimensions(img_width: int, img_height: int, target_longest_side: int) -> tuple:
@@ -88,11 +87,10 @@ def load_model(model="flux2-klein-4b", quantize: int = 8):
 def edit_image(
     model,
     prompt: str,
-    input_images: List[Path | str],
+    input_images: list[Path | str],
     height: int = 1024,
     width: int = 1024,
     steps: int = 4,
-    image_strength: float = None,
     seed: int = None,
 ):
     """Edit an image using text prompt (image-to-image).
@@ -104,9 +102,6 @@ def edit_image(
         height: Output height
         width: Output width
         steps: Number of inference steps
-        image_strength: How strongly the input image influences output (0.0-1.0).
-                      Default None means full denoising (same as CLI).
-                      For multi-image editing, this is always ignored (None).
         seed: Random seed
 
     Note: FLUX.2 does not support CFG guidance, so guidance is fixed at 1.0
@@ -114,19 +109,8 @@ def edit_image(
     if seed is None:
         seed = int(time.time() * 1000000) % 2**32
 
-    use_multi_image = len(input_images) > 1
-
-    # Calculate init timestep if image_strength is set (single-image only)
-    if not use_multi_image and image_strength is not None:
-        init_timestep = max(1, int(steps * image_strength))
-        actual_steps = steps - init_timestep
-        strength_info = f"{image_strength} ({actual_steps} denoising steps from timestep {init_timestep})"
-    else:
-        strength_info = "None (full denoising from timestep 0)"
-
     print(f"Editing with seed {seed}...")
     print(f"  Input images: {len(input_images)}")
-    print(f"  Image strength: {strength_info}")
     print(f"  [MEM] Before generation: {get_memory_usage():.2f} GB")
 
     start_time = time.time()
@@ -135,7 +119,6 @@ def edit_image(
     image_paths = [str(p) for p in input_images]
 
     # Generate using Flux2KleinEdit with image_paths (list)
-    # image_strength is None by default (full denoising, matching CLI behavior)
     image = model.generate_image(
         seed=seed,
         prompt=prompt,
@@ -144,7 +127,6 @@ def edit_image(
         width=width,
         guidance=1.0,  # FLUX.2 does not support CFG
         image_paths=image_paths,
-        image_strength=image_strength,
     )
 
     elapsed = time.time() - start_time
@@ -162,7 +144,7 @@ def edit_image(
 def main():
     parser = argparse.ArgumentParser(
         description="Edit images with FLUX.2-klein using MLX (mflux). "
-                    "Supports single-image editing (with --strength) and multi-image compositing."
+                    "Supports both single-image editing and multi-image compositing."
     )
     parser.add_argument("prompt", type=str, help="Text prompt for image editing")
     parser.add_argument(
@@ -186,15 +168,6 @@ def main():
         help="Target longest side (default: 1024)",
     )
     parser.add_argument("--steps", type=int, default=4, help="Inference steps (default: 4)")
-    parser.add_argument(
-        "--strength",
-        type=float,
-        default=None,
-        help="Image strength: how much input influences output (0.0-1.0). "
-             "Default None means full denoising (same as CLI). "
-             "Only applicable for single-image editing. "
-             "(default: None)",
-    )
     parser.add_argument("--seed", type=int, default=None, help="Random seed")
     parser.add_argument("--output", type=str, default="output.png", help="Output path")
     parser.add_argument(
@@ -243,7 +216,7 @@ def main():
     width, height = calculate_dimensions(img_width, img_height, args.resolution)
     print(f"Output size: {width}x{height}")
 
-    # Edit image(s) - image_strength defaults to None (full denoising)
+    # Edit image(s)
     image, seed = edit_image(
         model,
         args.prompt,
@@ -251,7 +224,6 @@ def main():
         height,
         width,
         args.steps,
-        args.strength,
         args.seed,
     )
 
