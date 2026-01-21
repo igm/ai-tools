@@ -9,17 +9,14 @@ AI image generation and vision tools optimized for Apple Silicon. Features FLUX.
 ### 1. Create virtual environment
 
 ```bash
-python3 -m venv .venv
+uv venv
 source .venv/bin/activate
 ```
 
 ### 2. Install dependencies
 
 ```bash
-pip install -r requirements.txt
-
-# Install mflux for MLX FLUX.2 support
-pip install mflux --pre
+uv pip install -r requirements.txt
 ```
 
 ## Scripts Overview

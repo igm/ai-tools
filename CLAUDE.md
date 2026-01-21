@@ -5,8 +5,9 @@ AI image generation and vision tools for Apple Silicon. Dual backend implementat
 ## Environment
 
 ```bash
+uv venv
 source .venv/bin/activate
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
 ## Quick Start
