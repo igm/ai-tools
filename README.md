@@ -1,4 +1,4 @@
-# imagen
+# AI Tools
 
 AI image generation and vision tools optimized for Apple Silicon. Features FLUX.2-klein for text-to-image generation, image-to-image editing, and Qwen3-VL for image description.
 
