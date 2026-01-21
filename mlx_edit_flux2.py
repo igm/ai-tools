@@ -48,7 +48,7 @@ def get_memory_usage():
     """Get current MLX memory usage in GB (approximate)."""
     try:
         import mlx.core as mx
-        return mx.metal.get_active_memory() / 1024**3 if hasattr(mx.metal, 'get_active_memory') else 0
+        return mx.get_active_memory() / 1024**3
     except:
         return 0
 
