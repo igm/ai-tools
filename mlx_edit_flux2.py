@@ -11,13 +11,14 @@ import time
 from pathlib import Path
 
 try:
-    from mflux.models.flux2.variants.txt2img.flux2_klein import Flux2Klein
+    from mflux.models.flux2.variants.edit.flux2_klein_edit import Flux2KleinEdit
     from mflux.models.common.config.model_config import ModelConfig
 except ImportError:
     print("Error: mflux not installed. Run: pip install mflux --pre")
     raise
 
 from PIL import Image
+from typing import List
 
 
 def calculate_dimensions(img_width: int, img_height: int, target_longest_side: int) -> tuple:
@@ -54,13 +55,14 @@ def get_memory_usage():
 
 
 def load_model(model="flux2-klein-4b", quantize: int = 8):
-    """Load the FLUX.2-klein model.
+    """Load the FLUX.2-klein edit model.
 
     Args:
         model: Model variant - "flux2-klein-4b" or "flux2-klein-9b"
         quantize: Quantization level (3, 4, 5, 6, 8, or None for no quantization)
     """
     print(f"Loading {model} (MLX)...")
+    print(f"  Mode: Image-to-image editing")
     print(f"  Quantization: {quantize}-bit" if quantize else "  Quantization: None (full precision)")
     print(f"  [MEM] Before loading: {get_memory_usage():.2f} GB")
 
@@ -72,8 +74,8 @@ def load_model(model="flux2-klein-4b", quantize: int = 8):
     else:
         raise ValueError(f"Unknown model: {model}")
 
-    # Load model
-    flux_model = Flux2Klein(
+    # Load Flux2KleinEdit for all image editing (single or multi)
+    flux_model = Flux2KleinEdit(
         quantize=quantize,
         model_config=config,
     )
@@ -86,39 +88,45 @@ def load_model(model="flux2-klein-4b", quantize: int = 8):
 def edit_image(
     model,
     prompt: str,
-    input_image: Path | str,
+    input_images: List[Path | str],
     height: int = 1024,
     width: int = 1024,
     steps: int = 4,
-    image_strength: float = 0.4,
+    image_strength: float = None,
     seed: int = None,
 ):
     """Edit an image using text prompt (image-to-image).
 
     Args:
-        model: Loaded Flux2Klein model
+        model: Loaded Flux2KleinEdit model
         prompt: Text prompt for editing
-        input_image: Path to input image
+        input_images: List of paths to input images
         height: Output height
         width: Output width
         steps: Number of inference steps
-        image_strength: How strongly the input image influences output (0.0-1.0)
+        image_strength: How strongly the input image influences output (0.0-1.0).
+                      Only used for single-image editing. Ignored for multi-image.
         seed: Random seed
 
     Note: FLUX.2 does not support CFG guidance, so guidance is fixed at 1.0
     """
-    import mlx.core as mx
-
     if seed is None:
         seed = int(time.time() * 1000000) % 2**32
 
+    use_multi_image = len(input_images) > 1
     print(f"Editing with seed {seed}...")
-    print(f"  Image strength: {image_strength}")
+    print(f"  Input images: {len(input_images)}")
+    if not use_multi_image:
+        print(f"  Image strength: {image_strength if image_strength is not None else 0.4}")
     print(f"  [MEM] Before generation: {get_memory_usage():.2f} GB")
 
     start_time = time.time()
 
-    # Generate image with image-to-image
+    # Convert input paths to strings
+    image_paths = [str(p) for p in input_images]
+
+    # Generate using Flux2KleinEdit with image_paths (list)
+    # image_strength is passed for single-image editing
     image = model.generate_image(
         seed=seed,
         prompt=prompt,
@@ -126,7 +134,7 @@ def edit_image(
         height=height,
         width=width,
         guidance=1.0,  # FLUX.2 does not support CFG
-        image_path=str(input_image),
+        image_paths=image_paths,
         image_strength=image_strength,
     )
 
@@ -144,10 +152,17 @@ def edit_image(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Edit images with FLUX.2-klein using MLX (mflux)"
+        description="Edit images with FLUX.2-klein using MLX (mflux). "
+                    "Supports single-image editing (with --strength) and multi-image compositing."
     )
     parser.add_argument("prompt", type=str, help="Text prompt for image editing")
-    parser.add_argument("--input", type=str, required=True, help="Input image path")
+    parser.add_argument(
+        "--input",
+        type=str,
+        required=True,
+        nargs="+",
+        help="Input image path(s). Use multiple times for multi-image editing (e.g., --input img1.jpg --input img2.jpg)",
+    )
     parser.add_argument(
         "--model",
         type=str,
@@ -166,7 +181,8 @@ def main():
         "--strength",
         type=float,
         default=0.4,
-        help="Image strength: how much input influences output (0.0-1.0, default: 0.4)",
+        help="Image strength: how much input influences output (0.0-1.0, default: 0.4). "
+             "Only used for single-image editing.",
     )
     parser.add_argument("--seed", type=int, default=None, help="Random seed")
     parser.add_argument("--output", type=str, default="output.png", help="Output path")
@@ -188,32 +204,43 @@ def main():
     # Handle quantization flag
     quantize = None if args.no_quantize else args.quantize
 
-    # Validate input image
-    if not os.path.exists(args.input):
-        print(f"Error: Input image not found: {args.input}")
-        return
+    # Validate all input images
+    input_paths = []
+    for path in args.input:
+        if not os.path.exists(path):
+            print(f"Error: Input image not found: {path}")
+            return
+        input_paths.append(Path(path))
 
-    # Load input image
-    img = Image.open(args.input)
-    img_width, img_height = img.size
-    print(f"Input image: {args.input} ({img_width}x{img_height})")
+    # Show mode info
+    if len(input_paths) > 1:
+        print(f"Multi-image mode: {len(input_paths)} images")
+        for p in input_paths:
+            print(f"  - {p}")
+    else:
+        print(f"Single-image mode: {input_paths[0]}")
+
+    # Load model (Flux2KleinEdit for all image editing)
+    model = load_model(args.model, quantize)
+
+    # Load primary image for dimension calculation
+    primary_img = Image.open(input_paths[0])
+    img_width, img_height = primary_img.size
+    print(f"Primary image: {input_paths[0]} ({img_width}x{img_height})")
 
     # Calculate output dimensions maintaining aspect ratio
     width, height = calculate_dimensions(img_width, img_height, args.resolution)
     print(f"Output size: {width}x{height}")
 
-    # Load model
-    model = load_model(args.model, quantize)
-
-    # Edit image
+    # Edit image(s) - image_strength only applies to single-image mode
     image, seed = edit_image(
         model,
         args.prompt,
-        args.input,
+        input_paths,
         height,
         width,
         args.steps,
-        args.strength,
+        args.strength if len(input_paths) == 1 else None,
         args.seed,
     )
 
