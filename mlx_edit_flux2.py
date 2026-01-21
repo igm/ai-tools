@@ -182,6 +182,11 @@ def main():
         action="store_true",
         help="Disable quantization (use full precision)",
     )
+    parser.add_argument(
+        "--no-metadata",
+        action="store_true",
+        help="Strip metadata from output image",
+    )
 
     args = parser.parse_args()
 
@@ -230,6 +235,12 @@ def main():
     # Save image
     output_path = Path(args.output)
     image.save(str(output_path))
+
+    # Strip metadata if requested
+    if args.no_metadata:
+        img = Image.open(output_path)
+        img.save(output_path)
+
     print(f"Saved to {output_path} (seed: {seed})")
 
 
