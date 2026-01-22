@@ -1,4 +1,4 @@
-# Flux2 CLI Tools
+# AI CLI Tools
 
 Opinionated tools for fast image generation and editing with FLUX.2-klein-9B, Z-Image-Turbo, and Qwen-Image-2512 on Apple Silicon (MPS).
 
@@ -13,23 +13,23 @@ Opinionated tools for fast image generation and editing with FLUX.2-klein-9B, Z-
 ## Installation
 
 ```bash
-# Install dependencies
-uv sync
+# Install from git
+uv tool install git+https://github.com/igm/ai-tools.git
 
-# Or install as global tools (optional)
+# Or install from local directory
 uv tool install .
 ```
 
 ## Tools
 
-### `flux_generate.py` - Text to Image
+### `flux-gen` - Text to Image
 
 Generate images from text prompts.
 
 ```bash
-uv run flux_generate.py "a cat in a hat"
-uv run flux_generate.py "a sunset" -o sunset.png
-uv run flux_generate.py "portrait" -w 768 -h 1024 -s 8 --seed 42
+flux-gen "a cat in a hat"
+flux-gen "a sunset" -o sunset.png
+flux-gen "portrait" -w 768 -h 1024 -s 8 --seed 42
 ```
 
 **Arguments:**
@@ -44,14 +44,14 @@ uv run flux_generate.py "portrait" -w 768 -h 1024 -s 8 --seed 42
 - `-q, --quiet` - Less verbose output
 - `--help` - Show help
 
-### `z_generate.py` - Text to Image (Z-Image-Turbo)
+### `z-gen` - Text to Image (Z-Image-Turbo)
 
 Generate images using Z-Image-Turbo model.
 
 ```bash
-uv run z_generate.py "a cat in a hat"
-uv run z_generate.py "a sunset" -o sunset.png
-uv run z_generate.py "portrait" -w 1024 -h 1024 -s 9 --seed 42
+z-gen "a cat in a hat"
+z-gen "a sunset" -o sunset.png
+z-gen "portrait" -w 1024 -h 1024 -s 9 --seed 42
 ```
 
 **Arguments:**
@@ -65,25 +65,25 @@ uv run z_generate.py "portrait" -w 1024 -h 1024 -s 9 --seed 42
 - `--no-memory-opts` - Disable memory optimizations
 - `-q, --quiet` - Less verbose output
 
-### `qwen_generate.py` - Text to Image (Qwen-Image-2512)
+### `qwen-gen` - Text to Image (Qwen-Image-2512)
 
 Generate images using Qwen-Image-2512 with native aspect ratio support. Includes turbo and lightning LoRA modes.
 
 ```bash
 # Standard mode (50 steps)
-uv run qwen_generate.py "a cat in a hat"
+qwen-gen "a cat in a hat"
 
 # Turbo mode (4 steps, ~12x faster)
-uv run qwen_generate.py "a cat" --turbo
+qwen-gen "a cat" --turbo
 
 # Lightning mode (4 steps, ~12x faster)
-uv run qwen_generate.py "a cat" --lightning
+qwen-gen "a cat" --lightning
 
 # Custom output with turbo
-uv run qwen_generate.py "sunset" --turbo -o sunset.png
+qwen-gen "sunset" --turbo -o sunset.png
 
 # 16:9 aspect ratio (auto-adjusts to native 1664x928)
-uv run qwen_generate.py "landscape" -w 1664 -h 928
+qwen-gen "landscape" -w 1664 -h 928
 ```
 
 **Arguments:**
@@ -118,14 +118,14 @@ uv run qwen_generate.py "landscape" -w 1664 -h 928
 | 3:2 | 1584x1056 |
 | 2:3 | 1056x1584 |
 
-### `flux_edit.py` - Image to Image
+### `flux-edit` - Image to Image
 
 Edit existing images with text prompts.
 
 ```bash
-uv run flux_edit.py "turn into oil painting" -i photo.jpg
-uv run flux_edit.py "anime style" -i portrait.jpg -o anime.png
-uv run flux_edit.py "cyberpunk" -i input.jpg -r 1024 -s 8
+flux-edit "turn into oil painting" -i photo.jpg
+flux-edit "anime style" -i portrait.jpg -o anime.png
+flux-edit "cyberpunk" -i input.jpg -r 1024 -s 8
 ```
 
 **Arguments:**

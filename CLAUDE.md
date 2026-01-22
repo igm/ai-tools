@@ -4,30 +4,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Flux2 CLI Tools - opinionated command-line tools for fast AI image generation on Apple Silicon (MPS). Supports FLUX.2-klein-9B, Z-Image-Turbo, and Qwen-Image-2512 models.
+AI CLI Tools - opinionated command-line tools for fast AI image generation on Apple Silicon (MPS). Supports FLUX.2-klein-9B, Z-Image-Turbo, and Qwen-Image-2512 models.
 
 **MPS-only.** All tools require Apple Silicon GPU acceleration.
+
+Package name: `ai-tools` (installed as `flux-gen`, `flux-edit`, `z-gen`, `qwen-gen`)
 
 ## Development Commands
 
 ```bash
-# Install dependencies
-uv sync
+# Install in development mode
+uv pip install -e .
 
 # Run tools
-uv run flux_generate.py "prompt"
-uv run flux_edit.py "prompt" -i input.jpg
-uv run z_generate.py "prompt"
-uv run qwen_generate.py "prompt" [--turbo|--lightning]
+flux-gen "prompt"
+flux-edit "prompt" -i input.jpg
+z-gen "prompt"
+qwen-gen "prompt" [--turbo|--lightning]
 ```
 
 ## Architecture
 
-**4 tool scripts** - each loads its specific model and provides a CLI interface:
-- `flux_generate.py` - Flux2 text-to-image (Flux2KleinPipeline)
+**4 tool modules** in `ai_tools/` package - each loads its specific model and provides a CLI interface:
+- `flux_gen.py` - Flux2 text-to-image (Flux2KleinPipeline)
 - `flux_edit.py` - Flux2 image-to-image (Flux2Img2ImgPipeline)
-- `z_generate.py` - Z-Image-Turbo text-to-image (Flux2KleinPipeline + LoRA)
-- `qwen_generate.py` - Qwen-Image-2512 text-to-image (DiffusionPipeline, supports turbo/lightning LoRA modes)
+- `z_gen.py` - Z-Image-Turbo text-to-image (ZImagePipeline)
+- `qwen_gen.py` - Qwen-Image-2512 text-to-image (DiffusionPipeline, supports turbo/lightning LoRA modes)
 
 **Shared utilities** (`mps_common.py`):
 - `get_memory_gb()` - Track MPS VRAM usage
