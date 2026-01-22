@@ -2,24 +2,26 @@
 """Z-Image-Turbo text-to-image generation CLI for Apple Silicon (MPS)."""
 
 import argparse
-import gc
 import os
 from pathlib import Path
 
 import torch
 from diffusers import ZImagePipeline
-from PIL import Image
 import warnings
+
+from mps_common import (
+    get_memory_gb,
+    cleanup_memory,
+    enable_memory_opts,
+    disable_memory_opts,
+    save_image_clean,
+    get_generator,
+)
 
 # Enable fast-math for MPS
 os.environ["PYTORCH_MPS_FAST_MATH"] = "1"
 
 warnings.filterwarnings("ignore", category=FutureWarning)
-
-
-def get_memory_gb() -> float:
-    """Get current MPS memory usage in GB."""
-    return torch.mps.current_allocated_memory() / 1024**3
 
 
 def load_pipeline(verbose: bool = True) -> ZImagePipeline:
@@ -46,27 +48,12 @@ def load_pipeline(verbose: bool = True) -> ZImagePipeline:
     if verbose:
         print(f"  [MEM] After pipe.to(device): {get_memory_gb():.2f} GB")
 
-    # Memory optimizations
-    pipe.enable_attention_slicing()
-    if hasattr(pipe, "enable_vae_slicing"):
-        pipe.enable_vae_slicing()
-    if hasattr(pipe, "enable_vae_tiling"):
-        pipe.enable_vae_tiling()
-    elif hasattr(getattr(pipe, "vae", None), "enable_tiling"):
-        pipe.vae.enable_tiling()
+    enable_memory_opts(pipe, verbose=verbose)
 
     if verbose:
-        print(f"  [MEM] After optimizations: {get_memory_gb():.2f} GB")
         print("Pipeline loaded!")
 
     return pipe
-
-
-def cleanup_memory():
-    """Force MPS memory cleanup."""
-    gc.collect()
-    torch.mps.empty_cache()
-    torch.mps.synchronize()
 
 
 def main():
@@ -96,8 +83,8 @@ Examples:
 
     args = parser.parse_args()
 
-    # Set seed
-    seed = args.seed if args.seed is not None else torch.randint(0, 2**32, (1,)).item()
+    generator = get_generator(args.seed)
+    seed = generator.initial_seed()
 
     if not args.quiet:
         print(f"Seed: {seed}")
@@ -107,14 +94,10 @@ Examples:
     pipe = load_pipeline(verbose=not args.quiet)
 
     if args.no_memory_opts:
-        pipe.disable_attention_slicing()
-        if hasattr(pipe, "disable_vae_slicing"):
-            pipe.disable_vae_slicing()
+        disable_memory_opts(pipe)
 
     if not args.quiet:
         print(f"Generating: {args.width}x{args.height}")
-
-    generator = torch.Generator("mps").manual_seed(seed)
 
     generate_kwargs = {
         "prompt": args.prompt,
@@ -134,23 +117,7 @@ Examples:
     if not args.quiet:
         print(f"  [MEM] After generation: {get_memory_gb():.2f} GB")
 
-    # Save output (strip metadata, auto-increment if exists)
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    final_path = output_path
-    counter = 1
-    while final_path.exists():
-        stem = output_path.stem
-        suffix = output_path.suffix
-        final_path = output_path.parent / f"{stem}_{counter}{suffix}"
-        counter += 1
-
-    img = result.images[0]
-    # Strip metadata by creating fresh image with flattened pixel data
-    clean_img = Image.new(img.mode, img.size)
-    clean_img.putdata(list(img.get_flattened_data()))
-    clean_img.save(final_path, optimize=False)
+    final_path = save_image_clean(result.images[0], Path(args.output))
     print(f"Image saved to: {final_path}")
 
     cleanup_memory()
