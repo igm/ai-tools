@@ -52,7 +52,7 @@ def describe_images(
 def main():
     parser = argparse.ArgumentParser(description="Generate image descriptions with Qwen3-VL using MLX")
     parser.add_argument("--input", type=str, nargs='+', required=True, help="Input image path(s)")
-    parser.add_argument("--prompt", type=str, default="Describe this image in detail.",
+    parser.add_argument("prompt", type=str, nargs="?", default="Describe this image in detail.",
                         help="Custom prompt (default: 'Describe this image in detail.')")
     parser.add_argument("--model", type=str, default="mlx-community/Qwen3-VL-8B-Instruct-4bit",
                         help="Model ID on Hugging Face")
