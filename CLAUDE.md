@@ -1,8 +1,8 @@
 # Flux2 CLI Tools
 
-Opinionated tools for fast image generation and editing with FLUX.2-klein-9B on Apple Silicon (MPS).
+Opinionated tools for fast image generation and editing with FLUX.2-klein-9B and Z-Image-Turbo on Apple Silicon (MPS).
 
-**This is a focused tool that uses only the FLUX.2-klein-9B model.** No other models are supported — the tool is designed for simplicity and speed with this specific model.
+**Focused tools using FLUX.2-klein-9B and Z-Image-Turbo models.** Each tool is designed for simplicity and speed with its specific model.
 
 ## Requirements
 
@@ -44,6 +44,27 @@ uv run flux_generate.py "portrait" -w 768 -h 1024 -s 8 --seed 42
 - `-q, --quiet` - Less verbose output
 - `--help` - Show help
 
+### `z_generate.py` - Text to Image (Z-Image-Turbo)
+
+Generate images using Z-Image-Turbo model.
+
+```bash
+uv run z_generate.py "a cat in a hat"
+uv run z_generate.py "a sunset" -o sunset.png
+uv run z_generate.py "portrait" -w 1024 -h 1024 -s 9 --seed 42
+```
+
+**Arguments:**
+- `prompt` - Text description (required)
+- `-o, --output` - Output filename (default: `z-output.png`)
+- `-w, --width` - Image width (default: 1024)
+- `-h, --height` - Image height (default: 1024)
+- `-s, --steps` - Inference steps (default: 9)
+- `--seed` - Random seed
+- `-g, --guidance` - Guidance scale (default: 0.0, Turbo requires 0)
+- `--no-memory-opts` - Disable memory optimizations
+- `-q, --quiet` - Less verbose output
+
 ### `flux_edit.py` - Image to Image
 
 Edit existing images with text prompts.
@@ -72,7 +93,7 @@ uv run flux_edit.py "cyberpunk" -i input.jpg -r 1024 -s 8
 - **Auto-increment** - Adds `_1`, `_2` suffix if output exists
 - **Clean Output** - Strips all metadata from generated images
 - **Memory Tracking** - Shows VRAM usage with `[MEM]` tags
-- **Fast** - 4 steps by default (Klein is distilled for speed)
+- **Fast** - 4 steps for Flux, 9 steps for Z-Image-Turbo (both distilled for speed)
 
 ## Memory Optimization
 
