@@ -1,6 +1,8 @@
 # Flux2 CLI Tools
 
-Fast image generation and editing with FLUX.2-klein-9B on Apple Silicon (MPS).
+Opinionated tools for fast image generation and editing with FLUX.2-klein-9B on Apple Silicon (MPS).
+
+**This is a focused tool that uses only the FLUX.2-klein-9B model.** No other models are supported — the tool is designed for simplicity and speed with this specific model.
 
 ## Requirements
 

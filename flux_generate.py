@@ -147,9 +147,9 @@ Examples:
         counter += 1
 
     img = result.images[0]
-    img_data = list(img.getdata())
+    # Strip metadata by creating fresh image with flattened pixel data
     clean_img = Image.new(img.mode, img.size)
-    clean_img.putdata(img_data)
+    clean_img.putdata(list(img.get_flattened_data()))
     clean_img.save(final_path, optimize=False)
     print(f"Image saved to: {final_path}")
 
