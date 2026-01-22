@@ -8,7 +8,7 @@ import torch
 from diffusers import ZImagePipeline
 import warnings
 
-from ai_tools.mps_common import (
+from igm.ai_tools.mps_common import (
     get_memory_gb,
     cleanup_memory,
     enable_memory_opts,

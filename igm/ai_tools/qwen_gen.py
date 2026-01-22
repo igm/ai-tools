@@ -10,7 +10,7 @@ from diffusers import DiffusionPipeline, FlowMatchEulerDiscreteScheduler
 from diffusers.models import QwenImageTransformer2DModel
 import warnings
 
-from mps_common import (
+from igm.ai_tools.mps_common import (
     get_memory_gb,
     cleanup_memory,
     enable_memory_opts,
