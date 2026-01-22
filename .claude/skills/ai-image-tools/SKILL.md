@@ -1,6 +1,6 @@
 ---
 name: ai-image-tools
-description: Generate and edit images using FLUX.2-klein, Z-Image-Turbo, and Qwen-Image models on Apple Silicon. Use when user wants to create, modify, or generate images.
+description: Generate and edit images using FLUX.2-klein, Z-Image-Turbo, Qwen-Image, and Qwen3-VL models on Apple Silicon. Use when user wants to create, modify, or generate images, or describe images.
 ---
 
 # AI Image Tools
@@ -13,6 +13,7 @@ This skill provides CLI tools for AI image generation and editing on Apple Silic
 - **`igm.flux-edit`** - Image-to-image editing using FLUX.2-klein-9B
 - **`igm.z-gen`** - Text-to-image using Z-Image-Turbo (9 steps)
 - **`igm.qwen-gen`** - Text-to-image using Qwen-Image-2512 (supports turbo/lightning modes)
+- **`igm.qwen-desc`** - Image-to-text description using Qwen3-VL-8B-Instruct
 
 ## When to Use
 
@@ -21,6 +22,7 @@ Use these tools when the user wants to:
 - Edit or transform an existing image
 - Create variations of an image
 - Apply specific styles to images
+- Describe or analyze an image
 
 ## Tool Selection
 
@@ -31,6 +33,7 @@ Use these tools when the user wants to:
 | Alternative text-to-image | `igm.z-gen` |
 | High quality / aspect ratios | `igm.qwen-gen` |
 | Very fast generation | `igm.qwen-gen --turbo` or `--lightning` |
+| Image description/analysis | `igm.qwen-desc` |
 
 ## Usage Patterns
 
@@ -66,6 +69,14 @@ igm.qwen-gen "portrait" -w 1472 -h 1104  # 4:3 aspect ratio
 
 ```bash
 igm.flux-gen "a cat" --seed 42
+```
+
+### Image Description
+
+```bash
+igm.qwen-desc photo.jpg
+igm.qwen-desc portrait.jpg -p "Describe the person's expression"
+igm.qwen-desc https://example.com/image.jpg -q
 ```
 
 ## Common Options

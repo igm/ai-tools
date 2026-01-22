@@ -1,6 +1,6 @@
 # AI CLI Tools
 
-Opinionated tools for fast image generation and editing with FLUX.2-klein-9B, Z-Image-Turbo, and Qwen-Image-2512 on Apple Silicon (MPS).
+Opinionated tools for fast image generation and editing with FLUX.2-klein-9B, Z-Image-Turbo, Qwen-Image-2512, and Qwen3-VL-8B-Instruct on Apple Silicon (MPS).
 
 **Focused tools for specific models.** Each tool is designed for simplicity and speed with its specific model.
 
@@ -139,6 +139,27 @@ igm.flux-edit "cyberpunk" -i input.jpg -r 1024 -s 8
 - `--no-memory-opts` - Disable memory optimizations
 - `-q, --quiet` - Less verbose output
 - `--help` - Show help
+
+### `igm.qwen-desc` - Image to Text Description
+
+Describe images using **[Qwen3-VL-8B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct)** by Qwen (Alibaba).
+
+```bash
+igm.qwen-desc photo.jpg
+igm.qwen-desc portrait.jpg -p "Describe the person's expression"
+igm.qwen-desc https://example.com/image.jpg -q
+```
+
+**Arguments:**
+- `image` - Image file path or URL (required)
+- `-p, --prompt` - Description prompt (default: "Describe this image.")
+- `-t, --max-tokens` - Max output tokens (default: 512)
+- `-q, --quiet` - Less verbose output
+
+**Features:**
+- Supports local files and URLs
+- Custom description prompts
+- Text output to stdout
 
 ## Features
 

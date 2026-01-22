@@ -59,9 +59,11 @@ def save_image_clean(img: Image.Image, output_path: Path) -> Path:
         final_path = output_path.parent / f"{stem}_{counter}{suffix}"
         counter += 1
 
-    # Strip metadata by creating fresh image with flattened pixel data
-    clean_img = Image.new(img.mode, img.size)
-    clean_img.putdata(list(img.get_flattened_data()))
+
+    # Strip metadata by rebuilding from raw pixel bytes (fresh image has no info/exif)
+    clean_img = Image.frombytes(img.mode, img.size, img.tobytes())
+    if img.mode == "P" and img.getpalette():
+        clean_img.putpalette(img.getpalette())
     clean_img.save(final_path, optimize=False)
     return final_path
 
