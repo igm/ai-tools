@@ -12,11 +12,11 @@ dependencies = [
     "transformers>=4.57.6",
 ]
 
-[project.scripts]
-igm.flux-gen = "igm.ai_tools.flux_gen:main"
-igm.flux-edit = "igm.ai_tools.flux_edit:main"
-igm.z-gen = "igm.ai_tools.z_gen:main"
-igm.qwen-gen = "igm.ai_tools.qwen_gen:main"
+[project.entry-points."console_scripts"]
+"igm.flux-gen" = "igm.ai_tools.flux_gen:main"
+"igm.flux-edit" = "igm.ai_tools.flux_edit:main"
+"igm.z-gen" = "igm.ai_tools.z_gen:main"
+"igm.qwen-gen" = "igm.ai_tools.qwen_gen:main"
 
 [build-system]
 requires = ["hatchling"]
