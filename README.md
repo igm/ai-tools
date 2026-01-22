@@ -10,10 +10,10 @@ AI image generation and vision tools optimized for Apple Silicon. Features FLUX.
 
 ```bash
 # MLX backend (default)
-uv tool install "git+https://github.com/igm/ai-tools"
+uv tool install "git+https://github.com/igm/ai-tools" --prerelease=allow
 
 # + PyTorch backend
-uv tool install "git+https://github.com/igm/ai-tools#egg=aitools[torch]"
+uv tool install "git+https://github.com/igm/ai-tools#egg=aitools[torch]" --prerelease=allow
 ```
 
 Then use anywhere: `flux-gen`, `flux-edit`, `flux-describe`, `flux-gen-torch`, etc.
