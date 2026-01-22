@@ -24,7 +24,7 @@ uv tool install .
 
 ### `igm.flux-gen` - Text to Image
 
-Generate images from text prompts.
+Generate images from text prompts using **[FLUX.2-klein-9B](https://huggingface.co/black-forest-labs/FLUX.2-klein-9B)** by Black Forest Labs.
 
 ```bash
 igm.flux-gen "a cat in a hat"
@@ -46,7 +46,7 @@ igm.flux-gen "portrait" -w 768 -h 1024 -s 8 --seed 42
 
 ### `igm.z-gen` - Text to Image (Z-Image-Turbo)
 
-Generate images using Z-Image-Turbo model.
+Generate images using **[Z-Image-Turbo](https://huggingface.co/Tongyi-MAI/Z-Image-Turbo)** by Tongyi (Alibaba).
 
 ```bash
 igm.z-gen "a cat in a hat"
@@ -67,7 +67,7 @@ igm.z-gen "portrait" -w 1024 -h 1024 -s 9 --seed 42
 
 ### `igm.qwen-gen` - Text to Image (Qwen-Image-2512)
 
-Generate images using Qwen-Image-2512 with native aspect ratio support. Includes turbo and lightning LoRA modes.
+Generate images using **[Qwen-Image-2512](https://huggingface.co/Qwen/Qwen-Image-2512)** by Qwen (Alibaba) with native aspect ratio support. Includes turbo and lightning LoRA modes.
 
 ```bash
 # Standard mode (50 steps)
@@ -101,11 +101,11 @@ igm.qwen-gen "landscape" -w 1664 -h 928
 - `-q, --quiet` - Less verbose output
 
 **LoRA Modes:**
-| Mode | Steps | CFG | LoRA Path |
-|------|-------|-----|-----------|
+| Mode | Steps | CFG | LoRA |
+|------|-------|-----|------|
 | Standard | 50 | 4.0 | (none) |
-| Turbo | 4 | 1.0 | Wuli-Art/Qwen-Image-2512-Turbo-LoRA |
-| Lightning | 4 | 1.0 | lightx2v/Qwen-Image-2512-Lightning |
+| Turbo | 4 | 1.0 | [Wuli-Art/Qwen-Image-2512-Turbo-LoRA](https://huggingface.co/Wuli-Art/Qwen-Image-2512-Turbo-LoRA) |
+| Lightning | 4 | 1.0 | [lightx2v/Qwen-Image-2512-Lightning](https://huggingface.co/lightx2v/Qwen-Image-2512-Lightning) |
 
 **Native Aspect Ratios:**
 | Ratio | Resolution |
@@ -120,7 +120,7 @@ igm.qwen-gen "landscape" -w 1664 -h 928
 
 ### `igm.flux-edit` - Image to Image
 
-Edit existing images with text prompts.
+Edit existing images with text prompts using **[FLUX.2-klein-9B](https://huggingface.co/black-forest-labs/FLUX.2-klein-9B)** by Black Forest Labs.
 
 ```bash
 igm.flux-edit "turn into oil painting" -i photo.jpg
