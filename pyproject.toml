@@ -22,8 +22,8 @@ dependencies = [
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["igm"]
+[tool.setuptools.packages.find]
+include = ["igm*"]
 
 [tool.uv.sources]
 diffusers = { git = "https://github.com/huggingface/diffusers.git" }
