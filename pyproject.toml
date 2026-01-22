@@ -1,0 +1,51 @@
+[project]
+name = "aitools"
+version = "0.1.0"
+description = "AI image generation and vision tools for Apple Silicon"
+requires-python = ">=3.12"
+dependencies = [
+    "mflux>=0.15",
+    "mlx>=0.30",
+    "mlx-lm>=0.30",
+    "mlx-metal>=0.30",
+    "mlx-vlm>=0.3",
+    "pillow>=10.0",
+    "piexif>=1.1",
+    "qwen-vl-utils>=0.0.14",
+]
+
+[project.optional-dependencies]
+torch = [
+    "torch>=2.9",
+    "torchvision>=0.24",
+    "diffusers @ git+https://github.com/huggingface/diffusers@ec376293714f269947f6d9d8a572bd73040bc1a0",
+    "transformers>=5.0.0rc0",
+    "accelerate>=1.12",
+    "opencv-python>=4.13",
+    "sdnq @ git+https://github.com/Disty0/sdnq.git@5ffd954715c3bacea960776dc7aa1c9871626aea",
+]
+
+[project.scripts]
+flux-gen = "mlx_generate_flux2:main"
+flux-edit = "mlx_edit_flux2:main"
+flux-describe = "mlx_describe_image:main"
+flux-gen-torch = "generate_flux2:main"
+flux-edit-torch = "edit_flux2:main"
+flux-describe-torch = "describe_image:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+only-include = [
+    "mlx_generate_flux2.py",
+    "mlx_edit_flux2.py",
+    "mlx_describe_image.py",
+    "generate_flux2.py",
+    "edit_flux2.py",
+    "describe_image.py"
+]

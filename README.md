@@ -6,36 +6,45 @@ AI image generation and vision tools optimized for Apple Silicon. Features FLUX.
 
 ## Installation
 
-### 1. Create virtual environment
+### Quick Install (from git)
 
 ```bash
-uv venv
-source .venv/bin/activate
+# MLX backend (default)
+uv tool install "git+https://github.com/igm/ai-tools"
+
+# + PyTorch backend
+uv tool install "git+https://github.com/igm/ai-tools#egg=aitools[torch]"
 ```
 
-### 2. Install dependencies
+Then use anywhere: `flux-gen`, `flux-edit`, `flux-describe`, `flux-gen-torch`, etc.
+
+### Development Install
 
 ```bash
-uv pip install -r requirements.txt
+git clone https://github.com/igm/ai-tools
+cd ai-tools
+uv venv
+source .venv/bin/activate
+uv pip install -e .  # or `uv pip install -e ".[torch]"` for PyTorch backend
 ```
 
 ## Scripts Overview
 
-| Script | Purpose | Backend | Speed |
-|--------|---------|---------|-------|
-| `mlx_generate_flux2.py` | Text-to-image | MLX | ⚡ Fast |
-| `mlx_edit_flux2.py` | Image editing | MLX | ⚡ Fast |
-| `mlx_describe_image.py` | Image description | MLX | ⚡ Fast |
-| `generate_flux2.py` | Text-to-image | PyTorch | Slow |
-| `edit_flux2.py` | Image editing | PyTorch | Slow |
-| `describe_image.py` | Image description | PyTorch | Slow |
+| CLI Command | Script | Purpose | Backend | Speed |
+|-------------|--------|---------|---------|-------|
+| `flux-gen` | mlx_generate_flux2.py | Text-to-image | MLX | ⚡ Fast |
+| `flux-edit` | mlx_edit_flux2.py | Image editing | MLX | ⚡ Fast |
+| `flux-describe` | mlx_describe_image.py | Image description | MLX | ⚡ Fast |
+| `flux-gen-torch` | generate_flux2.py | Text-to-image | PyTorch | Slow |
+| `flux-edit-torch` | edit_flux2.py | Image editing | PyTorch | Slow |
+| `flux-describe-torch` | describe_image.py | Image description | PyTorch | Slow |
 
 ## Text-to-Image Generation
 
 ### MLX Version (Recommended)
 
 ```bash
-python mlx_generate_flux2.py \
+flux-gen \
   "a photorealistic cat sitting on a windowsill" \
   --model flux2-klein-4b \
   --steps 4 \
@@ -75,14 +84,14 @@ Supports both **single-image editing** and **multi-image compositing**.
 
 ```bash
 # Single-image editing
-python mlx_edit_flux2.py \
+flux-edit \
   "transform into a watercolor painting" \
   --input photo.jpg \
   --steps 4 \
   --output edited.png
 
 # Multi-image compositing (e.g., add glasses to a person)
-python mlx_edit_flux2.py \
+flux-edit \
   "Make the woman wear the eyeglasses" \
   --input person.jpg glasses.jpg \
   --steps 4 \
@@ -117,7 +126,7 @@ python edit_flux2.py \
 ### MLX Version (Recommended)
 
 ```bash
-python mlx_describe_image.py \
+flux-describe \
   --input photo.jpg \
   --prompt "describe this image in detail" \
   --max-tokens 512
@@ -150,7 +159,7 @@ python describe_image.py \
 ### Generate a portrait
 
 ```bash
-python mlx_generate_flux2.py \
+flux-gen \
   "Photorealistic close-up of a hummingbird hovering near red flowers, frozen wings, detailed feathers, soft green background bokeh, high shutter speed look" \
   --width 1024 --height 560 --steps 4 --seed 42
 ```
@@ -158,7 +167,7 @@ python mlx_generate_flux2.py \
 ### Edit a photo
 
 ```bash
-python mlx_edit_flux2.py \
+flux-edit \
   "Add dramatic sunset lighting with orange and purple sky" \
   --input landscape.jpg \
   --steps 6
@@ -167,7 +176,7 @@ python mlx_edit_flux2.py \
 ### Describe an image
 
 ```bash
-python mlx_describe_image.py \
+flux-describe \
   --input screenshot.png \
   --prompt "What's shown in this screenshot? List all UI elements."
 ```
