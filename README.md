@@ -22,14 +22,14 @@ uv tool install .
 
 ## Tools
 
-### `flux-gen` - Text to Image
+### `igm.flux-gen` - Text to Image
 
 Generate images from text prompts.
 
 ```bash
-flux-gen "a cat in a hat"
-flux-gen "a sunset" -o sunset.png
-flux-gen "portrait" -w 768 -h 1024 -s 8 --seed 42
+igm.flux-gen "a cat in a hat"
+igm.flux-gen "a sunset" -o sunset.png
+igm.flux-gen "portrait" -w 768 -h 1024 -s 8 --seed 42
 ```
 
 **Arguments:**
@@ -44,14 +44,14 @@ flux-gen "portrait" -w 768 -h 1024 -s 8 --seed 42
 - `-q, --quiet` - Less verbose output
 - `--help` - Show help
 
-### `z-gen` - Text to Image (Z-Image-Turbo)
+### `igm.z-gen` - Text to Image (Z-Image-Turbo)
 
 Generate images using Z-Image-Turbo model.
 
 ```bash
-z-gen "a cat in a hat"
-z-gen "a sunset" -o sunset.png
-z-gen "portrait" -w 1024 -h 1024 -s 9 --seed 42
+igm.z-gen "a cat in a hat"
+igm.z-gen "a sunset" -o sunset.png
+igm.z-gen "portrait" -w 1024 -h 1024 -s 9 --seed 42
 ```
 
 **Arguments:**
@@ -65,25 +65,25 @@ z-gen "portrait" -w 1024 -h 1024 -s 9 --seed 42
 - `--no-memory-opts` - Disable memory optimizations
 - `-q, --quiet` - Less verbose output
 
-### `qwen-gen` - Text to Image (Qwen-Image-2512)
+### `igm.qwen-gen` - Text to Image (Qwen-Image-2512)
 
 Generate images using Qwen-Image-2512 with native aspect ratio support. Includes turbo and lightning LoRA modes.
 
 ```bash
 # Standard mode (50 steps)
-qwen-gen "a cat in a hat"
+igm.qwen-gen "a cat in a hat"
 
 # Turbo mode (4 steps, ~12x faster)
-qwen-gen "a cat" --turbo
+igm.qwen-gen "a cat" --turbo
 
 # Lightning mode (4 steps, ~12x faster)
-qwen-gen "a cat" --lightning
+igm.qwen-gen "a cat" --lightning
 
 # Custom output with turbo
-qwen-gen "sunset" --turbo -o sunset.png
+igm.qwen-gen "sunset" --turbo -o sunset.png
 
 # 16:9 aspect ratio (auto-adjusts to native 1664x928)
-qwen-gen "landscape" -w 1664 -h 928
+igm.qwen-gen "landscape" -w 1664 -h 928
 ```
 
 **Arguments:**
@@ -118,14 +118,14 @@ qwen-gen "landscape" -w 1664 -h 928
 | 3:2 | 1584x1056 |
 | 2:3 | 1056x1584 |
 
-### `flux-edit` - Image to Image
+### `igm.flux-edit` - Image to Image
 
 Edit existing images with text prompts.
 
 ```bash
-flux-edit "turn into oil painting" -i photo.jpg
-flux-edit "anime style" -i portrait.jpg -o anime.png
-flux-edit "cyberpunk" -i input.jpg -r 1024 -s 8
+igm.flux-edit "turn into oil painting" -i photo.jpg
+igm.flux-edit "anime style" -i portrait.jpg -o anime.png
+igm.flux-edit "cyberpunk" -i input.jpg -r 1024 -s 8
 ```
 
 **Arguments:**

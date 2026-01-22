@@ -13,10 +13,10 @@ dependencies = [
 ]
 
 [project.scripts]
-flux-gen = "ai_tools.flux_gen:main"
-flux-edit = "ai_tools.flux_edit:main"
-z-gen = "ai_tools.z_gen:main"
-qwen-gen = "ai_tools.qwen_gen:main"
+igm.flux-gen = "ai_tools.flux_gen:main"
+igm.flux-edit = "ai_tools.flux_edit:main"
+igm.z-gen = "ai_tools.z_gen:main"
+igm.qwen-gen = "ai_tools.qwen_gen:main"
 
 [build-system]
 requires = ["hatchling"]

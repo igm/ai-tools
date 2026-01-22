@@ -9,10 +9,10 @@ This skill provides CLI tools for AI image generation and editing on Apple Silic
 
 ## Available Tools
 
-- **`flux-gen`** - Text-to-image using FLUX.2-klein-9B (4 steps, fast)
-- **`flux-edit`** - Image-to-image editing using FLUX.2-klein-9B
-- **`z-gen`** - Text-to-image using Z-Image-Turbo (9 steps)
-- **`qwen-gen`** - Text-to-image using Qwen-Image-2512 (supports turbo/lightning modes)
+- **`igm.flux-gen`** - Text-to-image using FLUX.2-klein-9B (4 steps, fast)
+- **`igm.flux-edit`** - Image-to-image editing using FLUX.2-klein-9B
+- **`igm.z-gen`** - Text-to-image using Z-Image-Turbo (9 steps)
+- **`igm.qwen-gen`** - Text-to-image using Qwen-Image-2512 (supports turbo/lightning modes)
 
 ## When to Use
 
@@ -26,46 +26,46 @@ Use these tools when the user wants to:
 
 | Use case | Recommended tool |
 |----------|------------------|
-| Fast text-to-image | `flux-gen` (4 steps) |
-| Image editing/transforms | `flux-edit` |
-| Alternative text-to-image | `z-gen` |
-| High quality / aspect ratios | `qwen-gen` |
-| Very fast generation | `qwen-gen --turbo` or `--lightning` |
+| Fast text-to-image | `igm.flux-gen` (4 steps) |
+| Image editing/transforms | `igm.flux-edit` |
+| Alternative text-to-image | `igm.z-gen` |
+| High quality / aspect ratios | `igm.qwen-gen` |
+| Very fast generation | `igm.qwen-gen --turbo` or `--lightning` |
 
 ## Usage Patterns
 
 ### Basic Generation
 
 ```bash
-flux-gen "a serene mountain landscape at sunset"
-flux-gen "portrait of a warrior" -w 768 -h 1024
+igm.flux-gen "a serene mountain landscape at sunset"
+igm.flux-gen "portrait of a warrior" -w 768 -h 1024
 ```
 
 ### Image Editing
 
 ```bash
-flux-edit "turn into oil painting" -i photo.jpg
-flux-edit "anime style" -i portrait.jpg -o anime.png
+igm.flux-edit "turn into oil painting" -i photo.jpg
+igm.flux-edit "anime style" -i portrait.jpg -o anime.png
 ```
 
 ### Fast Generation (Qwen)
 
 ```bash
-qwen-gen "a cat sitting on a fence" --turbo
-qwen-gen "cyberpunk city" --lightning
+igm.qwen-gen "a cat sitting on a fence" --turbo
+igm.qwen-gen "cyberpunk city" --lightning
 ```
 
 ### Custom Resolution
 
 ```bash
-flux-gen "landscape" -w 1920 -h 1080
-qwen-gen "portrait" -w 1472 -h 1104  # 4:3 aspect ratio
+igm.flux-gen "landscape" -w 1920 -h 1080
+igm.qwen-gen "portrait" -w 1472 -h 1104  # 4:3 aspect ratio
 ```
 
 ### Reproducible Results
 
 ```bash
-flux-gen "a cat" --seed 42
+igm.flux-gen "a cat" --seed 42
 ```
 
 ## Common Options
