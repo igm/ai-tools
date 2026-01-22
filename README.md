@@ -18,6 +18,8 @@ uv tool install "git+https://github.com/igm/ai-tools#egg=aitools[torch]" --prere
 
 Then use anywhere: `flux-gen`, `flux-edit`, `flux-describe`, `flux-gen-torch`, etc.
 
+> **Note:** `--prerelease=allow` is required because `mflux` depends on `transformers>=5.0.0rc0` (pre-release).
+
 ### Development Install
 
 ```bash
